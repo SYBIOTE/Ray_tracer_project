@@ -4,17 +4,23 @@
 #include "Walnut/Image.h"
 #include "Walnut/Timer.h"
 #include "Renderer.h"
+#include "Camera.h"
 #include "imGuIZMOquat.h"
+
 
 using namespace Walnut;
 class CoreLayer : public Walnut::Layer
 {
 public:
-	virtual void OnUIRender() override
-	{
+	CoreLayer()
+		:m_Camera(45.0f, .1f, 100.f), light(-1, -1, -1) {}
+	virtual void OnUpdate(float delta) override {
+		m_Camera.OnUpdate(delta);
+	}
+	virtual void OnUIRender() override{
 		ImGui::Begin("Settings");  
 		ImGui::Text("Last Render: %.3fms", m_LastRenderTime);
-		if (ImGui::gizmo3D("##Dir1", light)) setLight(light);
+		if (ImGui::gizmo3D("##Dir1", light));
 
 		ImGui::End();
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f,0.0f));
@@ -33,20 +39,20 @@ public:
 
 	void Render() {
 		Timer timer;
-		m_Renderer.OnResize(m_ViewportWidth,m_ViewportHeight);
-		m_Renderer.Render(lightDir); 
+
+		m_Renderer.OnResize(m_ViewportWidth, m_ViewportHeight);
+		m_Camera.OnResize(m_ViewportWidth, m_ViewportHeight);
+		m_Renderer.Render(m_Camera,light);
+
 		m_LastRenderTime = timer.ElapsedMillis();
 	}  
 
 private:
 	Renderer m_Renderer;
-	glm::vec3 lightDir;
-	vgm::Vec3 light = { 1,1,1 };
+	Camera m_Camera;
+	glm::vec3 light;
 	uint32_t m_ViewportWidth = 0, m_ViewportHeight = 0;
 	float m_LastRenderTime = 0.0f;
-	void setLight(vgm::Vec3 light) {
-		lightDir = glm::vec3(light.x, light.y, light.z);
-	}
 };
 
 

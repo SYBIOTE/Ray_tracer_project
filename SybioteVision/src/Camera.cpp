@@ -3,7 +3,6 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
-
 #include "Walnut/Input/Input.h"
 
 using namespace Walnut;
@@ -12,7 +11,7 @@ Camera::Camera(float verticalFOV, float nearClip, float farClip)
 	: m_VerticalFOV(verticalFOV), m_NearClip(nearClip), m_FarClip(farClip)
 {
 	m_ForwardDirection = glm::vec3(0, 0, -1);
-	m_Position = glm::vec3(0, 0, 6);
+	m_Position = glm::vec3(0, 0, 2);
 }
 
 void Camera::OnUpdate(float ts)
